@@ -313,6 +313,12 @@ namespace Skew {
             _verifyHierarchy(node, null)
           }
         }
+
+        if object.mixins != null {
+          for node in object.mixins {
+            _verifyHierarchy(node, null)
+          }
+        }
       }
 
       for function in symbol.functions {
