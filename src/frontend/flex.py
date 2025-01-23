@@ -8,9 +8,9 @@ def _run_flex(source):
   fd, path = tempfile.mkstemp()
   os.close(fd)
   flex = subprocess.Popen(['flex', '-B', '-7', '-o', path], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-  stdout, stderr = flex.communicate(input=source)
-  sys.stdout.write(stdout)
-  sys.stderr.write(stderr)
+  stdout, stderr = flex.communicate(input=source.encode())
+  sys.stdout.write(stdout.decode())
+  sys.stderr.write(stderr.decode())
   if flex.returncode:
     raise Exception('flex failed to run')
   output = open(path).read()
@@ -19,7 +19,7 @@ def _run_flex(source):
 
 def _find_array(source, name):
   match = re.search(name + r'\[\d+\]\s*=[^{]*\{([^}]*)\}', source)
-  return map(int, match.groups(1)[0].split(','))
+  return list(map(int, match.groups(1)[0].split(',')))
 
 def _find_magic_number(source, pattern):
   match = re.search(pattern, source)
