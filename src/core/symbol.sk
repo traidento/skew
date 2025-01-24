@@ -320,6 +320,7 @@ namespace Skew {
   class ObjectSymbol : Symbol {
     var extends Node = null
     var implements List<Node> = null
+    var mixins List<Node> = null
     var baseType Type = null
     var baseClass ObjectSymbol = null
     var interfaceTypes List<Type> = null

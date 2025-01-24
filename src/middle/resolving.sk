@@ -260,6 +260,7 @@ namespace Skew.Resolving {
       var kind = symbol.kind
       var extends = symbol.extends
       var implements = symbol.implements
+      var mixins = symbol.mixins
 
       symbol.resolvedType ?= Type.new(.SYMBOL, symbol)
       _resolveParameters(symbol.parameters)
@@ -287,35 +288,7 @@ namespace Skew.Resolving {
           var functions List<FunctionSymbol> = []
           var members = symbol.baseClass.members.values
           members.sort(Symbol.SORT_BY_ID) # Sort so the order is deterministic
-          for member in members {
-            var memberKind = member.kind
-
-            # Separate out functions
-            if memberKind.isFunction {
-              if memberKind != .FUNCTION_CONSTRUCTOR {
-                functions.append(member.asFunctionSymbol)
-              }
-            }
-
-            # Include overloaded functions individually
-            else if memberKind.isOverloadedFunction {
-              for function in member.asOverloadedFunctionSymbol.symbols {
-                if function.kind != .FUNCTION_CONSTRUCTOR {
-                  functions.append(function)
-                }
-              }
-            }
-
-            # Other kinds
-            else if !memberKind.isParameter {
-              var other = symbol.members.get(member.name, null)
-              if other != null {
-                _log.semanticErrorBadOverride(other.range, other.name, baseType, member.range)
-              } else {
-                symbol.members[member.name] = member
-              }
-            }
-          }
+          _mergeFunctionsIntoMembers(symbol, members, baseType, functions)
 
           Merging.mergeFunctions(_log, symbol, functions, .INTO_DERIVED_CLASS)
         }
@@ -328,6 +301,34 @@ namespace Skew.Resolving {
         # Make sure to fill out the wrapped type anyway so code that tries to
         # access it doesn't crash. The dynamic type should ignore further errors.
         symbol.wrappedType = .DYNAMIC
+      }
+
+      # Add all mixins to the class
+      if mixins != null {
+        if !_options.globalizeAllFunctions {
+          _log.semanticErrorMixinNeedsGlobalizeFunctions(mixins[0].range)
+        }
+
+        for type in mixins {
+          _resolveAsParameterizedType(type, symbol.scope)
+          var mixinType = type.resolvedType
+          # Ignore the dynamic type, which will be from errors and dynamic expressions used for exports
+          if mixinType == .DYNAMIC {
+            continue
+          }
+
+          if kind != .OBJECT_WRAPPED && kind != .OBJECT_CLASS && (mixinType == .DYNAMIC || (mixinType.isClass && !mixinType.symbol.isValueType)) {
+            _log.semanticErrorInvalidExtends(type.range, mixinType)
+          }
+
+          # Copy members from the mixin type
+          var functions List<FunctionSymbol> = []
+          var members = mixinType.symbol.asObjectSymbol.members.values
+          members.sort(Symbol.SORT_BY_ID) # Sort so the order is deterministic
+          _mergeFunctionsIntoMembers(symbol, members, mixinType, functions)
+
+          Merging.mergeFunctions(_log, symbol, functions, .INTO_DERIVED_CLASS)
+        }
       }
 
       # Resolve the base interface types
@@ -421,6 +422,38 @@ namespace Skew.Resolving {
         generated.range = symbol.range
         symbol.functions.append(generated)
         symbol.members[generated.name] = generated
+      }
+    }
+
+    def _mergeFunctionsIntoMembers(symbol ObjectSymbol, members List<Symbol>, baseType Type, functions List<FunctionSymbol>) {
+      for member in members {
+        var memberKind = member.kind
+
+        # Separate out functions
+        if memberKind.isFunction {
+          if memberKind != .FUNCTION_CONSTRUCTOR {
+            functions.append(member.asFunctionSymbol)
+          }
+        }
+
+        # Include overloaded functions individually
+        else if memberKind.isOverloadedFunction {
+          for function in member.asOverloadedFunctionSymbol.symbols {
+            if function.kind != .FUNCTION_CONSTRUCTOR {
+              functions.append(function)
+            }
+          }
+        }
+
+        # Other kinds
+        else if !memberKind.isParameter {
+          var other = symbol.members.get(member.name, null)
+          if other != null {
+            _log.semanticErrorBadOverride(other.range, other.name, baseType, member.range)
+          } else {
+            symbol.members[member.name] = member
+          }
+        }
       }
     }
 

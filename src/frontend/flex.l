@@ -51,6 +51,7 @@
 "??"                              NULL_JOIN;
 "?."                              NULL_DOT;
 "?"                               QUESTION_MARK;
+":::"                             TRIPLE_COLON;
 "::"                              DOUBLE_COLON;
 ":"                               COLON;
 ";"                               SEMICOLON;
