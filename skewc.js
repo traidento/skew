@@ -12939,6 +12939,10 @@
     this.append(this.newError(range, 'The type "' + name + '" cannot have more than 32 flags'));
   };
 
+  Skew.Log.prototype.semanticErrorMixinNeedsGlobalizeFunctions = function(range) {
+    this.append(this.newError(range, 'Mixins require --globalize-functions or --release to work properly'));
+  };
+
   Skew.Options = {};
 
   Skew.Options.Type = {
@@ -16726,6 +16730,10 @@
 
     // Add all mixins to the class
     if (mixins != null) {
+      if (!this._options.globalizeAllFunctions) {
+        this._log.semanticErrorMixinNeedsGlobalizeFunctions(in_List.get(mixins, 0).range);
+      }
+
       for (var i1 = 0, list = mixins, count = list.length; i1 < count; i1 = i1 + 1 | 0) {
         var type = in_List.get(list, i1);
         this._resolveAsParameterizedType(type, symbol.scope);

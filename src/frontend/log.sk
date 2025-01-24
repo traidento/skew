@@ -881,4 +881,10 @@ namespace Skew {
       append(newError(range, "The type \"\(name)\" cannot have more than 32 flags"))
     }
   }
+
+  class Log {
+    def semanticErrorMixinNeedsGlobalizeFunctions(range Range) {
+      append(newError(range, "Mixins require --globalize-functions or --release to work properly"))
+    }
+  }
 }

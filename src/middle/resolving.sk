@@ -305,6 +305,10 @@ namespace Skew.Resolving {
 
       # Add all mixins to the class
       if mixins != null {
+        if !_options.globalizeAllFunctions {
+          _log.semanticErrorMixinNeedsGlobalizeFunctions(mixins[0].range)
+        }
+
         for type in mixins {
           _resolveAsParameterizedType(type, symbol.scope)
           var mixinType = type.resolvedType
