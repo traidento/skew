@@ -224,6 +224,8 @@ namespace Skew.Resolving {
       # The import/export annotations are inherited, except import isn't inherited for implemented functions
       if parent != null {
         symbol.flags |= parent.flags & (symbol.kind.isFunction && symbol.asFunctionSymbol.block != null ? .IS_EXPORTED : .IS_IMPORTED | .IS_EXPORTED)
+        # The keepname annotation is inherited too
+        symbol.flags |= parent.flags & .SHOULD_KEEPNAMES
       }
 
       # Resolve annotations on this symbol after annotation inheritance. Don't
@@ -3820,6 +3822,7 @@ namespace Skew.Resolving {
       "@rename": .IS_RENAMED,
       "@skip": .IS_SKIPPED,
       "@spreads": .SHOULD_SPREAD,
+      "@keepnames": .SHOULD_KEEPNAMES,
     }
 
     def _shouldCheckForSetter(node Node) bool {

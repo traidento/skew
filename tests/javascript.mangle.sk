@@ -2973,5 +2973,32 @@ def main(x bool) {
 })(this);
 ").jsMangle
 
+# Test @keepname
+test("
+@keepnames
+class Foo {
+  var verydistinctvariable double
+}
+
+@import
+def test(x Foo)
+
+@entry
+def main {
+  test(Foo.new(1))
+}
+", "
+(function() {
+  function b() {
+    test(new Foo(1));
+  }
+
+  function Foo(a) {
+    this.verydistinctvariable = a;
+  }
+
+  b();
+})();
+").jsMangle
   }
 }

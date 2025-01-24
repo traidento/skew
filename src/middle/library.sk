@@ -23,6 +23,7 @@ def @prefer
 def @rename(name string)
 def @skip
 def @spreads
+def @keepnames
 
 @spreads {
   def @using(name string) # For use with C#

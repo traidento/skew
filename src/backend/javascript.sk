@@ -2891,7 +2891,7 @@ namespace Skew {
 
     def _shouldRenameSymbol(symbol Symbol) bool {
       # Don't rename annotations since "@rename" is used for renaming and is identified by name
-      return !symbol.isImportedOrExported && !symbol.isRenamed && !symbol.isPrimaryConstructor &&
+      return !symbol.isImportedOrExported && !symbol.isRenamed && !symbol.shouldKeepnames && !symbol.isPrimaryConstructor &&
         symbol.kind != .FUNCTION_ANNOTATION && symbol.kind != .OBJECT_GLOBAL && symbol.kind != .FUNCTION_LOCAL
     }
 
