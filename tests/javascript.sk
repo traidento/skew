@@ -3829,5 +3829,69 @@ def main {
 })();
 ").js
 
+# Test mixins
+test("
+class Mixin {
+  def foo int {
+    return 123
+  }
+}
+
+class Foo ::: Mixin {
+  def bar int {
+    return self.foo
+  }
+}
+
+@export
+def main int {
+  var foo = Foo.new
+  return foo.bar
+}
+", "
+(function(exports) {
+  var Mixin = {};
+  Mixin.foo = function(self) {
+    return 123;
+  };
+
+  function Foo() {
+  }
+
+  Foo.bar = function(self) {
+    return Mixin.foo(self);
+  };
+
+  exports.main = function() {
+    var foo = new Foo();
+    return Foo.bar(foo);
+  };
+})(this);
+").js.globalizeAllFunctions
+
+# Test mixins error without globalizeAllFunctions
+test("
+class Mixin {
+  def foo int {
+    return 123
+  }
+}
+
+class Foo ::: Mixin {
+  def bar int {
+    return self.foo
+  }
+}
+
+@entry
+def main {
+  var foo = Foo.new
+  foo.bar
+}
+", "
+<stdin>:7:15: error: Mixins require --globalize-functions or --release to work properly
+class Foo ::: Mixin {
+              ~~~~~
+")
   }
 }
