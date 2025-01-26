@@ -306,9 +306,16 @@ class List {
     }
   }
 
-  def insert(index int, value T) {
-    assert(0 <= index && index <= count)
-    (self as dynamic).splice(index, 0, value)
+  if JS_INLINE_NATIVE {
+    @alwaysinline
+    def insert(index int, value T) {
+      (self as dynamic).splice(index, 0, value)
+    }
+  } else {
+    def insert(index int, value T) {
+      assert(0 <= index && index <= count)
+      (self as dynamic).splice(index, 0, value)
+    }
   }
 
   def removeFirst {
@@ -328,9 +335,16 @@ class List {
     }
   }
 
-  def removeLast {
-    assert(!isEmpty)
-    (self as dynamic).pop()
+  if JS_INLINE_NATIVE {
+    @alwaysinline
+    def removeLast {
+      (self as dynamic).pop()
+    }
+  } else {
+    def removeLast {
+      assert(!isEmpty)
+      (self as dynamic).pop()
+    }
   }
 
   if JS_INLINE_NATIVE {
@@ -345,9 +359,16 @@ class List {
     }
   }
 
-  def removeAt(index int) {
-    assert(0 <= index && index < count)
-    (self as dynamic).splice(index, 1)
+  if JS_INLINE_NATIVE {
+    @alwaysinline
+    def removeAt(index int) {
+      (self as dynamic).splice(index, 1)
+    }
+  } else {
+    def removeAt(index int) {
+      assert(0 <= index && index < count)
+      (self as dynamic).splice(index, 1)
+    }
   }
 
   if JS_INLINE_NATIVE {
