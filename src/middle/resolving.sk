@@ -3830,6 +3830,7 @@ namespace Skew.Resolving {
       "@skip": .IS_SKIPPED,
       "@spreads": .SHOULD_SPREAD,
       "@keepnames": .SHOULD_KEEPNAMES,
+      "@global": .IS_GLOBAL
     }
 
     def _shouldCheckForSetter(node Node) bool {

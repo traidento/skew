@@ -3885,6 +3885,30 @@ def main {
 <stdin>:7:15: error: Mixins require --globalize-functions or --release to work properly
 class Foo ::: Mixin {
               ~~~~~
-")
+").js
+
+# Test @global annotation
+test("
+@global
+namespace web {
+  @import
+  def alert(message string)
+}
+
+@entry
+def main {
+  web.alert(\"Hello, world!\")
+}
+", "
+(function() {
+  function main() {
+    alert('Hello, world!');
+  }
+
+  var web = {};
+
+  main();
+})();
+").js
   }
 }

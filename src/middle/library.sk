@@ -24,6 +24,7 @@ def @rename(name string)
 def @skip
 def @spreads
 def @keepnames
+def @global
 
 @spreads {
   def @using(name string) # For use with C#
