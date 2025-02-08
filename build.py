@@ -6,7 +6,7 @@ import glob
 import gzip
 import json
 import time
-import pipes
+import shlex
 import base64
 import shutil
 import subprocess
@@ -72,7 +72,7 @@ def job(fn):
 
 def run(args, exit_on_failure=True, **kwargs):
   # Print the command for debugging so that it can be copied and pasted into a terminal directly
-  print(' '.join(map(pipes.quote, args)))
+  print(' '.join(map(shlex.quote, args)))
 
   # Start the process
   process = subprocess.Popen(args, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr, **kwargs)
