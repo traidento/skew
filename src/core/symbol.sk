@@ -116,6 +116,8 @@ namespace Skew {
     IS_RENAMED
     IS_SKIPPED
     SHOULD_SPREAD
+    SHOULD_KEEPNAMES
+    IS_GLOBAL
 
     # Pass-specific
     IS_CSHARP_CONST
@@ -173,6 +175,8 @@ namespace Skew {
     def isRenamed bool           { return .IS_RENAMED in flags }
     def isSkipped bool           { return .IS_SKIPPED in flags }
     def shouldSpread bool        { return .SHOULD_SPREAD in flags }
+    def shouldKeepnames bool     { return .SHOULD_KEEPNAMES in flags }
+    def isGlobal bool            { return .IS_GLOBAL in flags }
 
     # Pass-specific flags
     def isCSharpConst bool        { return .IS_CSHARP_CONST in flags }
@@ -320,6 +324,7 @@ namespace Skew {
   class ObjectSymbol : Symbol {
     var extends Node = null
     var implements List<Node> = null
+    var mixins List<Node> = null
     var baseType Type = null
     var baseClass ObjectSymbol = null
     var interfaceTypes List<Type> = null

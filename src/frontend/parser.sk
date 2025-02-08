@@ -1343,6 +1343,17 @@ namespace Skew.Parsing {
               }
             }
 
+            if context.eat(.TRIPLE_COLON) {
+              object.mixins = []
+              while true {
+                var type = parseType(context)
+                object.mixins.append(type)
+                if !context.eat(.COMMA) {
+                  break
+                }
+              }
+            }
+
             context.skipWhitespace
             if !context.expect(.LEFT_BRACE) {
               scanForToken(context, .LEFT_BRACE)

@@ -38,7 +38,7 @@ source = open(os.path.join(path, 'flex.l')).read()
 result = flex.compile(source)
 
 # Assume all actions are sequential and start at 1
-if [k for k, v in result['actions']] != range(1, len(result['actions']) + 1):
+if [k for k, v in result['actions']] != list(range(1, len(result['actions']) + 1)):
   raise Exception('all actions are not sequential')
 
 # Assume ECHO is the last action

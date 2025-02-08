@@ -5,6 +5,7 @@ namespace Skew {
     over stopAfterResolve bool { return false }
     over supportsNestedTypes bool { return true }
     over removeSingletonInterfaces bool { return true }
+    over supportsNativeNullishCoalescing bool { return true }
     over stringEncoding Unicode.Encoding { return .UTF16 }
     over editOptions(options CompilerOptions) { options.define("TARGET", "JAVASCRIPT") }
     over includeSources(sources List<Source>) { sources.prepend(Source.new("<native-js>", NATIVE_LIBRARY_JS)) }
@@ -1613,7 +1614,7 @@ namespace Skew {
             # Always emit spaces around keyword operators, even when minifying
             var comments = _minify ? null : right.comments
             _emit(kind == .IN ? (left.isString ? _space : " ") + "in" + (comments != null ? "" : " ") :
-              _space + (kind == .EQUAL ? "==" + extraEquals : kind == .NOT_EQUAL ? "!=" + extraEquals : info.text))
+              _space + (kind == .EQUAL ? "==" + extraEquals : kind == .NOT_EQUAL ? "!=" + extraEquals : kind == .NULL_JOIN ? "??" : info.text))
 
             if comments != null {
               _emit(_newline)
@@ -2875,7 +2876,7 @@ namespace Skew {
 
     def _fullName(symbol Symbol) string {
       var parent = symbol.parent
-      if parent != null && parent.kind != .OBJECT_GLOBAL {
+      if parent != null && parent.kind != .OBJECT_GLOBAL && !parent.isGlobal {
         var enclosingName = _fullName(parent)
         if symbol.isPrimaryConstructor || symbol.isImported && symbol.kind == .FUNCTION_CONSTRUCTOR {
           return enclosingName
@@ -2891,7 +2892,7 @@ namespace Skew {
 
     def _shouldRenameSymbol(symbol Symbol) bool {
       # Don't rename annotations since "@rename" is used for renaming and is identified by name
-      return !symbol.isImportedOrExported && !symbol.isRenamed && !symbol.isPrimaryConstructor &&
+      return !symbol.isImportedOrExported && !symbol.isRenamed && !symbol.shouldKeepnames && !symbol.isPrimaryConstructor &&
         symbol.kind != .FUNCTION_ANNOTATION && symbol.kind != .OBJECT_GLOBAL && symbol.kind != .FUNCTION_LOCAL
     }
 

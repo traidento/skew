@@ -2369,13 +2369,10 @@ def main(foo Foo) {
   }
 
   exports.main = function(foo) {
-    var ref2;
-    var ref1;
-    var ref;
-    foo != null ? foo : bar();
-    foo.x != null ? foo.x : foo.x;
-    (ref = bar()).x != null ? ref.x : bar().x;
-    (ref2 = bar()).x != null ? ref2.x : (ref1 = bar()) != null ? ref1 : foo.x != null ? foo.x : foo;
+    foo ?? bar();
+    foo.x ?? foo.x;
+    bar().x ?? bar().x;
+    bar().x ?? (bar() ?? (foo.x ?? foo));
   };
 })(this);
 ").js
@@ -2837,34 +2834,32 @@ def main(baz Foo) {
   }
 
   exports.main = function(baz) {
-    var ref3;
-    var ref2;
     var ref1;
     var ref;
-    baz != null ? baz : foo();
+    baz ?? foo();
 
     if (baz == null) {
       baz = foo();
     }
 
-    baz.x != null ? baz.x : foo();
+    baz.x ?? foo();
 
     if (baz.x == null) {
       baz.x = foo();
     }
 
-    (ref = foo()).x != null ? ref.x : foo();
+    foo().x ?? foo();
 
-    if ((ref1 = foo()).x == null) {
-      ref1.x = foo();
+    if ((ref = foo()).x == null) {
+      ref.x = foo();
     }
 
-    bar(baz != null ? baz : foo());
+    bar(baz ?? foo());
     bar(baz != null ? baz : baz = foo());
-    bar(baz.x != null ? baz.x : foo());
+    bar(baz.x ?? foo());
     bar(baz.x != null ? baz.x : baz.x = foo());
-    bar((ref2 = foo()).x != null ? ref2.x : foo());
-    bar((ref3 = foo()).x != null ? ref3.x : ref3.x = foo());
+    bar(foo().x ?? foo());
+    bar((ref1 = foo()).x != null ? ref1.x : ref1.x = foo());
   };
 })(this);
 ").js
@@ -2881,14 +2876,12 @@ def main {
 ", "
 (function(exports) {
   exports.main = function() {
-    var ref3;
-    var ref2;
     var ref1;
     var ref;
-    use(foo[bar] !== null ? foo[bar] : '1');
+    use(foo[bar] ?? '1');
     use(foo[bar] !== null ? foo[bar] : foo[bar] = '2');
-    use((ref = foo())[ref1 = bar()] !== null ? ref[ref1] : '3');
-    use((ref2 = foo())[ref3 = bar()] !== null ? ref2[ref3] : ref2[ref3] = '4');
+    use(foo()[bar()] ?? '3');
+    use((ref = foo())[ref1 = bar()] !== null ? ref[ref1] : ref[ref1] = '4');
   };
 })(this);
 ").js
@@ -3829,5 +3822,93 @@ def main {
 })();
 ").js
 
+# Test mixins
+test("
+class Mixin {
+  def foo int {
+    return 123
+  }
+}
+
+class Foo ::: Mixin {
+  def bar int {
+    return self.foo
+  }
+}
+
+@export
+def main int {
+  var foo = Foo.new
+  return foo.bar
+}
+", "
+(function(exports) {
+  var Mixin = {};
+  Mixin.foo = function(self) {
+    return 123;
+  };
+
+  function Foo() {
+  }
+
+  Foo.bar = function(self) {
+    return Mixin.foo(self);
+  };
+
+  exports.main = function() {
+    var foo = new Foo();
+    return Foo.bar(foo);
+  };
+})(this);
+").js.globalizeAllFunctions
+
+# Test mixins error without globalizeAllFunctions
+test("
+class Mixin {
+  def foo int {
+    return 123
+  }
+}
+
+class Foo ::: Mixin {
+  def bar int {
+    return self.foo
+  }
+}
+
+@entry
+def main {
+  var foo = Foo.new
+  foo.bar
+}
+", "
+<stdin>:7:15: error: Mixins require --globalize-functions or --release to work properly
+class Foo ::: Mixin {
+              ~~~~~
+").js
+
+# Test @global annotation
+test("
+@global
+namespace web {
+  @import
+  def alert(message string)
+}
+
+@entry
+def main {
+  web.alert(\"Hello, world!\")
+}
+", "
+(function() {
+  function main() {
+    alert('Hello, world!');
+  }
+
+  var web = {};
+
+  main();
+})();
+").js
   }
 }

@@ -6,6 +6,7 @@ namespace Skew {
     def requiresIntegerSwitchStatements bool { return false }
     def supportsListForeach bool { return false }
     def supportsNestedTypes bool { return false }
+    def supportsNativeNullishCoalescing bool { return false }
     def needsLambdaLifting bool { return false }
     def removeSingletonInterfaces bool { return false }
     def stringEncoding Unicode.Encoding { return .UTF32 }
@@ -310,6 +311,12 @@ namespace Skew {
 
         if object.implements != null {
           for node in object.implements {
+            _verifyHierarchy(node, null)
+          }
+        }
+
+        if object.mixins != null {
+          for node in object.mixins {
             _verifyHierarchy(node, null)
           }
         }
