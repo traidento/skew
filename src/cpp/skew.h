@@ -81,7 +81,8 @@
 #endif
 
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
+#include <cstdint>
 #include <initializer_list>
 #include <string>
 #include <unordered_map>
