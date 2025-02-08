@@ -345,7 +345,7 @@ def main int {
 
   Foo.FOO = 0;
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js.globalizeAllFunctions
 
@@ -409,7 +409,7 @@ def main int {
 
   in_IFoo.FOO = 0;
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js.globalizeAllFunctions
 
@@ -444,7 +444,7 @@ interface IFoo {
     return this._x;
   };
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js
 
@@ -479,7 +479,7 @@ interface IFoo {
     return self._x;
   };
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js.globalizeAllFunctions
 
@@ -510,7 +510,7 @@ interface IFoo {
     this._x = _x;
   }
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js.globalizeAllFunctions.inlineAllFunctions
 
@@ -1270,7 +1270,7 @@ def main int {
     this.x = 0;
   }
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js.foldAllConstants
 
@@ -1309,7 +1309,7 @@ def main int {
     this.x = 0;
   }
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js.foldAllConstants
 
@@ -1344,7 +1344,7 @@ def main int {
     return this.x;
   };
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js.foldAllConstants
 
@@ -1378,7 +1378,7 @@ def main int {
     this.x = 0;
   }
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js.foldAllConstants
 
@@ -3583,7 +3583,7 @@ def main int {
     ////
   }
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js
 
@@ -3744,7 +3744,7 @@ def main int {
       3 | 0;
   }
 
-  process.exit(main());
+  (globalThis.process !== undefined ? process : std).exit(main());
 })();
 ").js
 

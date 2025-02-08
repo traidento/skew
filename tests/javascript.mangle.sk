@@ -1222,7 +1222,7 @@ def main(args List<string>) int {
 
   d(g, f);
 
-  process.exit(h(process.argv.slice(2)));
+  (globalThis.process !== undefined ? process : std).exit(h(globalThis.process !== undefined ? process.argv.slice(2) : scriptArgs.slice(1)));
 })();
 ").jsMangle
 
@@ -1240,7 +1240,7 @@ def main int {
     return 0;
   }
 
-  process.exit(a());
+  (globalThis.process !== undefined ? process : std).exit(a());
 })();
 ").jsMangle
 
@@ -1256,7 +1256,7 @@ def foo int {
     return 3;
   }
 
-  process.exit(a());
+  (globalThis.process !== undefined ? process : std).exit(a());
 })();
 ").jsMangle.foldAllConstants
 
@@ -1386,7 +1386,7 @@ def main int {
     return 37880129;
   }
 
-  process.exit(a());
+  (globalThis.process !== undefined ? process : std).exit(a());
 })();
 ").jsMangle.foldAllConstants.inlineAllFunctions
 
@@ -1515,7 +1515,7 @@ def main int {
     return 0;
   }
 
-  process.exit(a());
+  (globalThis.process !== undefined ? process : std).exit(a());
 })();
 ").jsMangle
 
@@ -2391,7 +2391,7 @@ def main int {
     this.a = 1;
   }
 
-  process.exit(c());
+  (globalThis.process !== undefined ? process : std).exit(c());
 })();
 ").jsMangle.foldAllConstants
 
@@ -2700,7 +2700,7 @@ def test int {
     a: 1 << 25
   };
 
-  process.exit(c());
+  (globalThis.process !== undefined ? process : std).exit(c());
 })();
 ").jsMangle
 
@@ -2843,7 +2843,7 @@ def main int {
     return a = a + 1, a = a + 1, a;
   }
 
-  process.exit(b());
+  (globalThis.process !== undefined ? process : std).exit(b());
 })();
 ").jsMangle
 
@@ -2862,7 +2862,7 @@ def main int {
     return a = a + 1 | 0, a = a + 1 | 0, a;
   }
 
-  process.exit(b());
+  (globalThis.process !== undefined ? process : std).exit(b());
 })();
 ").jsMangle
 
@@ -2908,7 +2908,7 @@ def main int {
     return a[0] = b[0] + 1, a[0] = b[0] + 1, a[0];
   }
 
-  process.exit(c());
+  (globalThis.process !== undefined ? process : std).exit(c());
 })();
 ").jsMangle
 

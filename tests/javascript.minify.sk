@@ -219,7 +219,7 @@ def main int {
   return 0
 }
 ", "
-(function(){function b(){var a=0;return~a?bar():foo(),0}process.exit(b())})();
+(function(){function b(){var a=0;return~a?bar():foo(),0}(globalThis.process !== undefined ? process : std).exit(b())})();
 ").jsMinify.jsMangle
 
 # Check nested negation minification
